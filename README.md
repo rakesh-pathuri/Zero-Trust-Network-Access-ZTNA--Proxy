@@ -76,7 +76,36 @@ You must run all three services simultaneously in three separate terminals:
 
 If you try to access the proxy `http://localhost:5000` directly in your browser, you will be blocked with a `401 Unauthorized` error because you don't have a cryptographic identity token. 
 
-To access it, you must first request a token from the Auth Server (`http://localhost:5001/login`), and then attach it as a `Bearer` token in the headers of your request to the proxy.
+To access it, you must first request a token from the Auth Server, and then attach it as a `Bearer` token in the headers of your request to the proxy.
+
+#### Using PowerShell:
+
+1. **Get the Token:**
+   ```powershell
+   $body = @{ username="admin"; password="admin_secure_password" } | ConvertTo-Json
+   $response = Invoke-RestMethod -Uri "http://localhost:5001/login" -Method Post -Body $body -ContentType "application/json"
+   $token = $response.token
+   echo $token
+   ```
+
+2. **Access the Proxy with the Token:**
+   ```powershell
+   $headers = @{ Authorization = "Bearer $token" }
+   Invoke-RestMethod -Uri "http://localhost:5000" -Headers $headers
+   ```
+
+#### Using cURL:
+
+1. **Get the Token:**
+   ```bash
+   curl -X POST http://localhost:5001/login -H "Content-Type: application/json" -d '{"username":"admin", "password":"admin_secure_password"}'
+   ```
+
+2. **Access the Proxy with the Token:**
+   *(Replace `<YOUR_TOKEN>` with the token received from the previous command)*
+   ```bash
+   curl -X GET http://localhost:5000 -H "Authorization: Bearer <YOUR_TOKEN>"
+   ```
 
 ---
 
