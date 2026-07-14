@@ -15,6 +15,22 @@ This project implements a **Zero-Trust Architecture (ZTA)**. It assumes the netw
 
 ## Project Architecture
 
+### Visual Flow
+
+```mermaid
+graph TD
+    A((User)) -->|1. Login Credentials| B[Identity Provider]
+    B -->|2. Returns signed JWT| A
+    A -->|3. Request + JWT Bearer| C{Zero-Trust Proxy}
+    C -->|4a. Invalid Token| D[Drop Connection 401]
+    C -->|4b. Valid Token| E[Forward Request]
+    E --> F[(Hidden Internal App)]
+    
+    style B fill:#d00000,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#e85d04,stroke:#333,stroke-width:2px,color:#fff
+    style F fill:#2a9d8f,stroke:#333,stroke-width:2px,color:#fff
+```
+
 The repository contains three microservices:
 
 1. **Identity Provider (`auth_server.py`)**: 
